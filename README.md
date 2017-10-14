@@ -3,7 +3,7 @@
 ### Description
 This library is enables the Omega2(+) to communicate with a WiiClassic controller via I2C.
 
-[[https://github.com/gamer-cndg/omega2-wii-classic-controller/blob/master/hw.jpg|alt=hardware_setup]]
+[[https://raw.githubusercontent.com/gamer-cndg/omega2-wii-classic-controller/master/hw.jpg|alt=hardware_setup]]
 
 ### Hardware Wireup
 You will need:
