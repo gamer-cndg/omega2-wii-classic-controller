@@ -48,6 +48,7 @@ This library has only been tested with an original Nintendo Wii classic controll
 * Frank Zhao, for the [instructable on the Wii classic][instr-wiiclassic]
 
 ![hardware setup](https://raw.githubusercontent.com/gamer-cndg/omega2-wii-classic-controller/master/hw.jpg)
+![example execution](https://raw.githubusercontent.com/gamer-cndg/omega2-wii-classic-controller/master/shell.png)
 
 
 [adafruit-nunchucky]: <https://www.adafruit.com/product/345>
