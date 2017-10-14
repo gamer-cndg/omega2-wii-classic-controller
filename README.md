@@ -3,8 +3,6 @@
 ### Description
 This library is enables the Omega2(+) to communicate with a WiiClassic controller via I2C.
 
-[[https://raw.githubusercontent.com/gamer-cndg/omega2-wii-classic-controller/master/hw.jpg|alt=hardware_setup]]
-
 ### Hardware Wireup
 You will need:
 * an Onion Omega2 or Omega2+, preferably with the extension dock
@@ -48,6 +46,9 @@ This library has only been tested with an original Nintendo Wii classic controll
 * Maximilian Gerhardt, library porter
 * Andrew Mascolo, [original library][github-wiiclassic]
 * Frank Zhao, for the [instructable on the Wii classic][instr-wiiclassic]
+
+![hardware setup](https://raw.githubusercontent.com/gamer-cndg/omega2-wii-classic-controller/master/hw.jpg)
+
 
 [adafruit-nunchucky]: <https://www.adafruit.com/product/345>
 [github-wiiclassic]: <https://github.com/AndrewMascolo/WiiClassicController>
