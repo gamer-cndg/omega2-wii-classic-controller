@@ -10,7 +10,7 @@ You will need:
 * an adapter board for the controller's connector (e.g., [Adafruit's nunchucky][adafruit-nunchucky])
 * breadboard and wires
 
-From the adapter board, connect GND to Omega's GND, VCC to 3.3V, Data to SDL and Clock to SCL. Do not insert the adapter the wrong way up, or else GND and 3.3V will be exchanged and your controller will be damaged through reverse polarity. 
+From the adapter board, connect GND to Omega's GND, VCC to 3.3V, Data to SDA and Clock to SCL. Do not insert the adapter the wrong way up, or else GND and 3.3V will be exchanged and your controller will be damaged through reverse polarity. 
 
 ### Library Usage
 

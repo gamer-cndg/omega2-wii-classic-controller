@@ -8,7 +8,7 @@
 static wiiclassic_status_t controllerStatus;
 
 int main(int argc, char* argv[]) {
-	printf("Testing WiiClass controller now \n");
+	printf("Testing WiiClassic controller now \n");
 
 	bool initOkay = WiiClassic_Init();
 	while(!initOkay) {
