@@ -1,7 +1,7 @@
 # Onion Omega2 Wii classic controller library
 
 ### Description
-This library is enables the Omega2(+) to communicate with a WiiClassic controller via I2C.
+This library enables the Omega2(+) to communicate with a WiiClassic controller via I2C.
 
 ### Hardware Wireup
 You will need:
@@ -10,19 +10,19 @@ You will need:
 * an adapter board for the controller's connector (e.g., [Adafruit's nunchucky][adafruit-nunchucky])
 * breadboard and wires
 
-From the adapter board, connect GND to Omega's GND, VCC to 3.3V, Data to SDL and Clock to SCL. Do not insert the adapter the wrong way up, or else GND and 3.3V will be exchanged and your controller will be damaged through reverse polarity.  
+From the adapter board, connect GND to Omega's GND, VCC to 3.3V, Data to SDL and Clock to SCL. Do not insert the adapter the wrong way up, or else GND and 3.3V will be exchanged and your controller will be damaged through reverse polarity. 
 
 ### Library Usage
 
-First, you need to initialize the controller by calling `WiiClassic_Init()`. The functions returns a `bool` which indicates the presence of the controler. For reading data, allocate a `wiiclassic_status` object and give a pointer to it to `WiiClassic_ReadStatus()`. Optionally printing the controler values by calling `WiiClassic_PrintStatus()` or access the members of the `wiiclassic_status` object directly. 
+First, you need to initialize the controller by calling `WiiClassic_Init()`. The functions returns a `bool` which indicates the presence of the controler. For reading data, allocate a `wiiclassic_status_t` object and give a pointer to it to `WiiClassic_ReadStatus()`. Optionally printing the controler values by calling `WiiClassic_PrintStatus()` or access the members of the `wiiclassic_status_t` object directly. 
 
 ```c
 /* Initializes the WiiClassic controller */
 bool WiiClassic_Init();
 /* reads the status of the WiiClass controller into the structure */
-bool WiiClassic_ReadStatus(wiiclassic_status* status);
+bool WiiClassic_ReadStatus(wiiclassic_status_t* status);
 /* prints the status to stdout */
-void WiiClassic_PrintStatus(wiiclassic_status* status);
+void WiiClassic_PrintStatus(wiiclassic_status_t* status);
 ``` 
 For an example, see the `main.c` in this repository.
 
