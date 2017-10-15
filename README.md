@@ -39,6 +39,11 @@ Analog stick left/right: (1.000000, 0.500000), (0.500000, 0.500000)
 This project was designed for cross-compliation. Compile your toolchain according to https://docs.onion.io/omega2-docs/cross-compiling.html, change the paths in the `Makefile` and do a `make all`. Optionally, `make upload` will attempt to use `sshpass` with `scp` to transfer the compiled binary to your Omega Onion2 system. Simply change the IP address and the password if you whish to use this feature.
 For resons of simplicity, the header and library files for the I2C functionality has been included in this project. You can also compile the project by yourself (https://github.com/OnionIoT/i2c-exp-driver/).
 
+After executing `make all`, the library file `libwiiclassic.so` and a executable file `main` will be created. If you wish to to use the dynamic library in your own project, you have to:
+1. set the include path to where the `WiiClassic.h` is (`-I somedir`)
+2. set the library path to where the `libwiiclassic.so` and the dependency `libonioni2c.so` and `liboniondebug.so` is
+3. set the linker flags to link your executable against the prementioned dependencies (`-lwiiclassic -lonioni2c -loniondebug`) 
+
 ### Compatibility
 This library has only been tested with an original Nintendo Wii classic controller. Clones might or might not work.
 
