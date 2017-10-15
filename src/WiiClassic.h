@@ -43,7 +43,7 @@ typedef struct {
 	float analogLeftY;
 	float analogRightX;
 	float analogRightY;
-} wiiclassic_status;
+} wiiclassic_status_t;
 
 /* defines for I2C specifics */
 #define WIICLASSIC_I2C_ADDRESS 0x52
@@ -55,8 +55,8 @@ typedef struct {
 /* Initializes the WiiClassic controller */
 bool WiiClassic_Init();
 /* reads the status of the WiiClass controller into the structure */
-bool WiiClassic_ReadStatus(wiiclassic_status* status);
+bool WiiClassic_ReadStatus(wiiclassic_status_t* status);
 /* prints the status to stdout */
-void WiiClassic_PrintStatus(wiiclassic_status* status);
+void WiiClassic_PrintStatus(wiiclassic_status_t* status);
 
 #endif /* WIICLASSIC_H_ */

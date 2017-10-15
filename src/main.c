@@ -3,10 +3,9 @@
 #include <stdbool.h>
 #include <unistd.h>
 #include "WiiClassic.h"
-#include <onion-debug.h>
 
-/* controler status object */
-static wiiclassic_status controllerStatus;
+/* controller status object */
+static wiiclassic_status_t controllerStatus;
 
 int main(int argc, char* argv[]) {
 	printf("Testing WiiClass controller now \n");

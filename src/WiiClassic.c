@@ -8,11 +8,11 @@
 #include <onion-i2c.h>
 #include "Debug.h"
 
-static bool WiiClassicRead();
+static bool WiiClassic_ReadData();
 static bool WiiClassic_GetButton(uint8_t col, uint8_t D);
 static uint8_t WiiClassic_GetStick(uint8_t col, uint8_t mask);
-static int WiiClass_ResetReadPointer();
-static bool WiiClassic_CheckControllerPresent();
+static int WiiClassic_ResetReadPointer();
+static bool WiiClassic_IsControllerPresent();
 
 /* i2c read buffer */
 static uint8_t wiiData[6];
@@ -20,15 +20,15 @@ static uint8_t wiiData[6];
 static uint8_t RX = 8, RY = 8, LX = 8, LY = 8;
 
 /* init sequence */
-#define WIICONTROLLER_INIT_BYTES 0x40, 0x00
+#define WIICLASSIC_INIT_BYTES 0x40, 0x00
 /* stick value byte to float divider */
-#define WIICONTROLLER_DIVIDER 256.0f
+#define WIICLASSIC_DIVIDER 256.0f
 /* outer deadzone. controller will not go higher than this. */
-#define WIICONTROLLER_OUTER_DEADZONE 0.968750
+#define WIICLASSIC_OUTER_DEADZONE 0.968750
 
 /* macro for checking deadzones */
 #define WIICONTROLLER_CHECK_DEADZONE(val) \
-	if((val) >= WIICONTROLLER_OUTER_DEADZONE) \
+	if((val) >= WIICLASSIC_OUTER_DEADZONE) \
 	(val) = 1.0f;
 
 /* bitmasks for buttons and sticks */
@@ -55,15 +55,15 @@ static uint8_t RX = 8, RY = 8, LX = 8, LY = 8;
 bool WiiClassic_Init() {
 
 	//initialization routine
-	uint8_t initBytes[] = { WIICONTROLLER_INIT_BYTES };
+	uint8_t initBytes[] = { WIICLASSIC_INIT_BYTES };
 	i2c_writeBufferRaw(ONION_I2C_DEV_NUM, WIICLASSIC_I2C_ADDRESS, initBytes, (int)sizeof(initBytes));
 
 	//Do one read to check if it is present
-	WiiClassicRead();
-	return WiiClassic_CheckControllerPresent();
+	WiiClassic_ReadData();
+	return WiiClassic_IsControllerPresent();
 }
 
-static bool WiiClassic_CheckControllerPresent() {
+static bool WiiClassic_IsControllerPresent() {
 	//controller is assumed to be not present when read data is all 0xff
 	uint8_t dataIfNotPresent[6];
 	memset(dataIfNotPresent, 0xff, sizeof(dataIfNotPresent));
@@ -71,19 +71,19 @@ static bool WiiClassic_CheckControllerPresent() {
 }
 
 /* reads the status of the WiiClass controller into the structure */
-bool WiiClassic_ReadStatus(wiiclassic_status* status) {
+bool WiiClassic_ReadStatus(wiiclassic_status_t* status) {
 	//sanity check
 	if(!status) return false;
 
 	//read status bytes from i2c
-	bool readOkay = WiiClassicRead();
+	bool readOkay = WiiClassic_ReadData();
 	if(!readOkay)
 		return false;
 
 	//above I2C error handling doesn't seem to work because
 	//the Omega never reports an error, even if no controller
 	//is connected. let's check ourselves.
-	if(!WiiClassic_CheckControllerPresent())
+	if(!WiiClassic_IsControllerPresent())
 		return false;
 
 	//parse them into the structure
@@ -106,47 +106,37 @@ bool WiiClassic_ReadStatus(wiiclassic_status* status) {
 	status->buttonB = WiiClassic_GetButton(5, BB);
 
 	uint8_t al_x_raw = (uint8_t)((WiiClassic_GetStick(0, 0x3F) >> 1) * LX);
-	status->analogLeftX = al_x_raw / WIICONTROLLER_DIVIDER;
+	status->analogLeftX = al_x_raw / WIICLASSIC_DIVIDER;
 	WIICONTROLLER_CHECK_DEADZONE(status->analogLeftX);
 
 	uint8_t al_y_raw = (uint8_t)((WiiClassic_GetStick(1, 0x3F) >> 1) * LY);
-	status->analogLeftY = al_y_raw / WIICONTROLLER_DIVIDER;
+	status->analogLeftY = al_y_raw / WIICLASSIC_DIVIDER;
 	WIICONTROLLER_CHECK_DEADZONE(status->analogLeftY);
 
 	uint8_t ar_x_raw = (uint8_t)(((WiiClassic_GetStick(0, 0xC0) >> 3) | (WiiClassic_GetStick(1,0xC0) >> 5) | (WiiClassic_GetStick(2, 0xC0) >> 7)) * RX);
 	//printf("ar_x_raw: %d\n", (int)ar_x_raw);
-	status->analogRightX = ar_x_raw / WIICONTROLLER_DIVIDER;
+	status->analogRightX = ar_x_raw / WIICLASSIC_DIVIDER;
 	WIICONTROLLER_CHECK_DEADZONE(status->analogRightX);
 
 	uint8_t ar_y_raw = (uint8_t)(WiiClassic_GetStick(2, 0x3F) * RY);
 	//printf("ar_y_raw: %d\n", (int)ar_y_raw);
-	status->analogRightY = ar_y_raw / WIICONTROLLER_DIVIDER;
+	status->analogRightY = ar_y_raw / WIICLASSIC_DIVIDER;
 	WIICONTROLLER_CHECK_DEADZONE(status->analogRightY);
 
 	return true;
 }
 
-void WiiClassic_PrintStatus(wiiclassic_status* status) {
+void WiiClassic_PrintStatus(wiiclassic_status_t* status) {
 	if(!status) {
 		printf("No controller status object given.\n");
 		return;
 	}
 	uint8_t buttons[] = {
-			status->buttonA,
-			status->buttonB,
-			status->buttonY,
-			status->buttonX,
-			status->buttonSelect,
-			status->buttonStart,
-			status->buttonHome,
-			status->shoulderL,
-			status->shoulderZL,
-			status->shoulderZR,
-			status->shoulderR,
-			status->dpadUp,
-			status->dpadRight,
-			status->dpadDown,
-			status->dpadLeft,
+			status->buttonA, status->buttonB, status->buttonY,
+			status->buttonX, status->buttonSelect, status->buttonStart,
+			status->buttonHome, status->shoulderL, status->shoulderZL,
+			status->shoulderZR, status->shoulderR, status->dpadUp,
+			status->dpadRight, status->dpadDown, status->dpadLeft,
 	};
 	const char* buttonNames[] = {
 			//Front buttons
@@ -174,13 +164,13 @@ void WiiClassic_PrintStatus(wiiclassic_status* status) {
 			status->analogRightX, status->analogRightY);
 }
 
-static int WiiClass_ResetReadPointer() {
+static int WiiClassic_ResetReadPointer() {
 	uint8_t readAddr = 0x00;
 	int err = i2c_writeBufferRaw(ONION_I2C_DEV_NUM, WIICLASSIC_I2C_ADDRESS, &readAddr, 1);
 	return err;
 }
 
-static bool WiiClassicRead() {
+static bool WiiClassic_ReadData() {
 	//clear old data
 	memset(wiiData, 0xff, sizeof(wiiData));
 	//read 6 bytes from the I2C bus
@@ -189,7 +179,7 @@ static bool WiiClassicRead() {
 	if(err == EXIT_FAILURE)
 		return false;
 	//set read pointer to 0 again
-	err = WiiClass_ResetReadPointer();
+	err = WiiClassic_ResetReadPointer();
 	//error handling
 	if(err == EXIT_FAILURE)
 		return false;
