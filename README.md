@@ -14,7 +14,7 @@ From the adapter board, connect GND to Omega's GND, VCC to 3.3V, Data to SDA and
 
 ### Library Usage
 
-First, you need to initialize the controller by calling `WiiClassic_Init()`. The functions returns a `bool` which indicates the presence of the controler. For reading data, allocate a `wiiclassic_status_t` object and give a pointer to it to `WiiClassic_ReadStatus()`. Optionally printing the controler values by calling `WiiClassic_PrintStatus()` or access the members of the `wiiclassic_status_t` object directly. 
+First, you need to initialize the controller by calling `WiiClassic_Init()`. The functions returns a `bool` which indicates the presence of the controller. For reading data, allocate a `wiiclassic_status_t` object and give a pointer to it to `WiiClassic_ReadStatus()`. Optionally printing the controler values by calling `WiiClassic_PrintStatus()` or access the members of the `wiiclassic_status_t` object directly. 
 
 ```c
 /* Initializes the WiiClassic controller */
@@ -36,13 +36,21 @@ Analog stick left/right: (1.000000, 0.500000), (0.500000, 0.500000)
 
 ### Compilation
 
-This project was designed for cross-compliation. Compile your toolchain according to https://docs.onion.io/omega2-docs/cross-compiling.html, change the paths in the `Makefile` and do a `make all`. Optionally, `make upload` will attempt to use `sshpass` with `scp` to transfer the compiled binary to your Omega Onion2 system. Simply change the IP address and the password if you whish to use this feature.
+This project was designed for cross-compliation. Compile your toolchain according to https://docs.onion.io/omega2-docs/cross-compiling.html, **change the paths** in the `Makefile` (`TOOLCHAIN_ROOT_DIR`) and do a `make all`. Optionally, `make upload` will attempt to use `sshpass` with `scp` to transfer the compiled binary to your Omega Onion2 system. Simply change the IP address and the password if you whish to use this feature.
 For resons of simplicity, the header and library files for the I2C functionality has been included in this project. You can also compile the project by yourself (https://github.com/OnionIoT/i2c-exp-driver/).
 
 After executing `make all`, the library file `libwiiclassic.so` and a executable file `main` will be created. If you wish to to use the dynamic library in your own project, you have to:
 1. set the include path to where the `WiiClassic.h` is (`-I somedir`)
-2. set the library path to where the `libwiiclassic.so` and the dependency `libonioni2c.so` and `liboniondebug.so` is
+2. set the library path to where the `libwiiclassic.so` and the dependency `libonioni2c.so` and `liboniondebug.so` is (`-L somelibdir`)
 3. set the linker flags to link your executable against the prementioned dependencies (`-lwiiclassic -lonioni2c -loniondebug`) 
+
+See the Makefile of this project to see how a userspace program may be compiled and linked against this library.
+
+### Testing the compiled binaries
+
+1. Install the I2C library by typing `opkg update && opkg install libonion2c` If you already have that library, skip this step.
+2. Transfer the `libwiiclassic.so` file from this repository to the `/usr/lib/` folder on your Omega2, e.g. by using `ssh` or `scp`. 
+3. Transfer the `main` file (ELF) to some directory on your Omega2, e.g. `/root/` and run it!
 
 ### Compatibility
 This library has only been tested with an original Nintendo Wii classic controller. Clones might or might not work.
